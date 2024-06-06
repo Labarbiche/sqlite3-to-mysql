@@ -118,6 +118,17 @@ _copyright_header: str = f"sqlite3mysql version {package_version} Copyright (c) 
     help="Use FULLTEXT indexes on TEXT columns. "
     "Will throw an error if your MySQL version does not support InnoDB FULLTEXT indexes!",
 )
+@click.option(
+    "--table-prefix",
+    default="",
+    help="Table prefix. Defaults to ''.",
+)
+@click.option(
+    "--skip-data-transfer",
+    is_flag=True,
+    default=False,
+    help="Skip data transfer.",
+)
 @click.option("--with-rowid", is_flag=True, help="Transfer rowid columns.")
 @click.option("-c", "--chunk", type=int, default=None, help="Chunk reading/writing SQL records")
 @click.option("-l", "--log-file", type=click.Path(), help="Log file")
@@ -145,6 +156,8 @@ def cli(
     mysql_collation: str,
     use_fulltext: bool,
     with_rowid: bool,
+    table_prefix: str,
+    skip_data_transfer: bool,
     chunk: int,
     log_file: t.Union[str, "os.PathLike[t.Any]"],
     quiet: bool,
@@ -180,6 +193,8 @@ def cli(
             mysql_charset=mysql_charset.lower() if mysql_charset else "utf8mb4",
             mysql_collation=mysql_collation.lower() if mysql_collation else None,
             ignore_duplicate_keys=ignore_duplicate_keys,
+            table_prefix=table_prefix,
+            skip_data_transfer=skip_data_transfer,
             use_fulltext=use_fulltext,
             with_rowid=with_rowid,
             chunk=chunk,
